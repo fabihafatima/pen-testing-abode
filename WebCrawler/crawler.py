@@ -16,6 +16,8 @@ parser = argparse.ArgumentParser(description='Small python script to crawl a web
 parser.add_argument('url', metavar='url', type=str, help="url to crawl")
 parser.add_argument('-wd', '--dirlist', help="wordlist for directory enumeration", type=str)
 parser.add_argument('-ws', '--domainlist', help="wordlist for subdomain enumeration", type=str)
+parser.add_argument('-x', '--extension', type=str, nargs='+', help="extension for directory enumeration")
+
 args = parser.parse_args()
 
 # Code
@@ -57,16 +59,20 @@ print ("______________________________________________________________")
 
 # Explore sub-directories
 dirlist = args.dirlist if args.dirlist else "common.txt"
+extensions = ['']
+if args.extension: extensions.extend(args.extension)
 with open(dirlist, "r") as subdir_file:
     for line in subdir_file:
         word = line.strip()
-        print('\r' + word, flush=False, end='')
-        sys.stdout.write('\033[2K\033[1G')
         test_url = target_url + "/" + word
-        response = request(test_url)
-        if response:
-            subdir_list.append(test_url)
-            print("[+] Discovered URL --> " + test_url)
+        for x in extensions:
+            payload = test_url + x
+            print('\r' + payload, flush=False, end='')
+            sys.stdout.write('\033[2K\033[1G')
+            response = request(payload)
+            if response:
+                subdir_list.append(payload)
+                print("[+] Discovered URL --> " + payload)
 print ("______________________________________________________________")
 
 
